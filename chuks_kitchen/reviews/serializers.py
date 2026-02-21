@@ -22,7 +22,7 @@ class ReviewSerializer(serializers.ModelSerializer):
             )
 
         # Ensure menuitem exists in that order
-        if not OrderItem.objects.filter(order=order, menuitem=menu_item).exists():
+        if not OrderItem.objects.filter(order=order, menu_item=menu_item).exists():
             raise serializers.ValidationError(
                 "This product was not purchased in this order."
             )
