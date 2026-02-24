@@ -6,6 +6,7 @@ from django.db import transaction
 from .models import Order, OrderItem
 from .serializers import OrderSerializer
 from menu.models import MenuItem
+from rest_framework.decorators import action
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -55,3 +56,19 @@ class OrderViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(order)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+   
+
+    @action(detail=True, methods=["post"])
+    def cancel(self, request, pk=None):
+        order = self.get_object()
+
+        if order.user != request.user:
+            return Response({"error": "Not allowed"}, status=403)
+
+        try:
+            order.cancel(user=request.user, reason=request.data.get("reason"))
+            return Response({"message": "Order cancelled successfully"})
+        except ValueError as e:
+            return Response({"error": str(e)}, status=400)
+    

@@ -4,8 +4,8 @@ from .views import CategoryView, MenuItemView, MenuItemVariationView
 
 router = DefaultRouter()
 router.register(r'categories', CategoryView)
-router.register(r'menu', MenuItemView)
-router.register(r'menu-variations', MenuItemVariationView)
+router.register(r'foods', MenuItemView)
+router.register(r'foods-variations', MenuItemVariationView)
 
 urlpatterns = [
     path('', include(router.urls)),
