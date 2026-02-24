@@ -15,6 +15,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs ['password'] != attrs['password2']:
             raise serializers.ValidationError ("Passswords Do Not Match")
+        return attrs
         
     def validate_referral_code(self, value):
         try:
