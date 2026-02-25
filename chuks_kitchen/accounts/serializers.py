@@ -28,13 +28,27 @@ class RegisterSerializer(serializers.ModelSerializer):
         
 
     def create(self, validated_data):
+        #Pop the raw string and the extra password
         password = validated_data.pop("password2")
-        referral_obj = validated_data.pop("referral_code", None)
+        referral_code_str = validated_data.pop("referral_code", None)
+        
+        #Create the user
         user = CustomUser.objects.create_user(**validated_data)
-        if referral_obj:
-            user.referral_used = referral_obj
-            user.save()
-            
+        
+        #Convert the string into a Model Instance
+        if referral_code_str:
+            try:
+                # We look for the Referral record that matches the string
+                actual_referral_instance = Referral.objects.get(code=referral_code_str)
+                
+                # Now we assign the INSTANCE
+                user.referral_used = actual_referral_instance
+                user.save()
+            except Referral.DoesNotExist:
+                # If the code is fake/wrong, the user still gets created 
+                # but without a referral attached.
+                pass
+                
         return user
    
 
